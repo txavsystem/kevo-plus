@@ -1,9 +1,7 @@
 include 'asynchttp_v1'
-// Helpful: http://htmlpreview.github.io/?https://github.com/krlaframboise/Resources/blob/master/SmartThings-Icons.html
 
 metadata {
-    // Automatically generated. Make future change here.
-    definition(name: "Kevo Unofficial", namespace: "kennelbound-smartthings/kevolock", author: "Kennelbound") {
+    definition(name: "Kevo Plus", namespace: "Helvio88/kevo-plus", author: "Helvio88") {
         capability "Actuator"
         capability "Sensor"
         capability "Health Check"
@@ -53,11 +51,11 @@ metadata {
 }
 
 int getLOCK_REFRESH_WAIT() {
-    2 // in seconds seconds
+    2
 }
 
 int getMAX_REFRESH_RETRIES() {
-    5 // retries when the bolt state hasn't changed
+    5
 }
 
 def noCallback(response, data) {
@@ -65,14 +63,11 @@ def noCallback(response, data) {
 }
 
 def login(callback) {
-//    log.trace "login:$callback"
     kevoCommandGet '/user/remote_locks/command/lock.json', ["arguments": kevoLockId], "loginTest", "text/json", callback
 }
 
 def loginTest(response, data) {
-//    log.trace "loginTest:$response.status:${data.get('passthru')}"
     if (response.status == 200 && !response.hasError()) {
-        // logged in, continue to passthru method
         log.trace "already logged in, calling passthru callback handler: ${data.get('passthru')}:${data.get('callback')}"
         data.callback = data.passthru
         kevoCommandGetResponseHandler(response, data)
@@ -85,7 +80,6 @@ def loginTest(response, data) {
 }
 
 def loginStart(response, data) {
-//    log.trace "loginStart:$response.status:${data.get('passthru')}"
     kevoCommandPost('/signin', [
             "user[username]"    : kevoUsername,
             "user[password]"    : kevoPassword,
@@ -96,7 +90,6 @@ def loginStart(response, data) {
 }
 
 def loginCredentials(response, data) {
-//    log.trace "loginCredentials:$response.status"
     if (response.status == 302 || response.status == 200) {
         log.trace "redirect or 200 from login post, considering successful"
     }
@@ -110,15 +103,12 @@ def unlock() {
 }
 
 def unlockSendCommand(response, data) {
-//    log.trace "unlockSendCommand:$response.status"
     state.last_bolt_time = state.bolt_state_time
     kevoCommandGet("/user/remote_locks/command/remote_unlock.json", ['arguments': kevoLockId], "unlockVerifyCommand", "text/json")
 }
 
 def unlockVerifyCommand(response, data) {
-//    log.trace "unlockVerifyCommand:$response.status"
     if (response.status == 200) {
-//        log.trace "waiting for $LOCK_REFRESH_WAIT seconds before calling refresh"
         runIn LOCK_REFRESH_WAIT, autoRefresh
     } else {
         log.error "couldn't determine lock status after unlocking, $e"
@@ -133,15 +123,12 @@ def lock() {
 }
 
 def lockSendCommand(response, data) {
-//    log.trace "lockSendCommand:$response.status"
     state.last_bolt_time = state.bolt_state_time
     kevoCommandGet("/user/remote_locks/command/remote_lock.json", ['arguments': kevoLockId], "lockVerifyCommand", "text/json")
 }
 
 def lockVerifyCommand(response, data) {
-//    log.trace "lockVerifyCommand:$response.status"
     if (response.status == 200) {
-//        log.trace "waiting for $LOCK_REFRESH_WAIT seconds before calling refresh"
         runIn LOCK_REFRESH_WAIT, autoRefresh
     } else {
         log.error "couldn't determine lock status after locking, $e"
@@ -171,13 +158,10 @@ def executeRefresh() {
 }
 
 def refreshSendCommand(response, data) {
-//    log.trace "refreshSendCommand:$response.status"
-//    log.trace "current bolt: $state.last_bolt_time && $state.bolt_state_time"
     kevoCommandGet("/user/remote_locks/command/lock.json", ['arguments': kevoLockId], "refreshVerifyCommand", "text/json")
 }
 
 def refreshVerifyCommand(response, data) {
-//    log.trace "refreshVerifyCommand:$response.status->$state.bolt_state_time::::$state.last_bolt_time"
     if (response.status != 200) {
         log.error "couldn't determine lock status after refreshing, $e"
         sendEvent name: 'lock', value: 'unknown'
@@ -187,16 +171,12 @@ def refreshVerifyCommand(response, data) {
     if (state.bolt_state_time == state.last_bolt_time) {
         log.trace "Retrying since we have the old state"
 
-        // the operation hasn't completed, retry the refresh in LOCK_REFRESH_WAIT seconds
         runIn LOCK_REFRESH_WAIT, executeRefresh
         return
     }
-
-//    log.info "changed bolt: $state.last_bolt_time && $state.bolt_state_time"
 }
 
 def kevoCommandPost(path, body, callback, contentType, passthru = null) {
-//    log.trace("kevoCommandPost(path:$path, body:$body, callback:$callback, contentType:$contentType, headers: $headers")
     String stringBody = body?.collect { k, v -> "$k=$v" }?.join("&")?.toString() ?: ""
 
     def params = [
@@ -213,19 +193,17 @@ def kevoCommandPost(path, body, callback, contentType, passthru = null) {
             passthru   : passthru,
             contentType: contentType,
             callback   : callback
-    ] //Data for Async Command.  Params to retry, handler to handle, and retry count if needed
+    ]
 
     try {
-//        log.debug "Attempting to post: $data"
         asynchttp_v1.post('kevoCommandPostResponseHandler', params, data)
         state.referer = "${params['uri']}$path"
     } catch (e) {
         log.error "Something unexpected went wrong in kevoCommandPost: ${e}"
-    }//try / catch for asynchttpPost
-}//async post command
+    }
+}
 
 def kevoCommandPostResponseHandler(response, data) {
-//    log.trace "kevoCommandPostResponseHandler:$response.status->$response.headers"
     updateTokenAndCookie(response)
     updateState(response)
 
@@ -245,8 +223,6 @@ def kevoCommandPostResponseHandler(response, data) {
 }
 
 def kevoCommandGet(path, query, callback, contentType, passthru = null) {
-//    log.trace "kevoCommandGet(path:$path, query:$query, contentType:$contentType, callback:$callback, headers: $headers)"
-
     def params = [
             uri               : "https://mykevo.com",
             path              : path,
@@ -263,7 +239,6 @@ def kevoCommandGet(path, query, callback, contentType, passthru = null) {
     ]
 
     try {
-//        log.debug("Attempting to get: $data")
         asynchttp_v1.get('kevoCommandGetResponseHandler', params, data)
         state.referer = "${params['uri']}$path"
     } catch (e) {
@@ -272,7 +247,6 @@ def kevoCommandGet(path, query, callback, contentType, passthru = null) {
 }
 
 def kevoCommandGetResponseHandler(response, data) {
-//    log.trace "kevoCommandGetResponseHandler:$response.status->$response.headers"
     updateTokenAndCookie(response)
     updateState(response)
     def callback = data.get('callback')
@@ -344,7 +318,6 @@ def unknown() {
 def updateState(response) {
     try {
         def json = response.json
-//        log.trace "updating state from json: $json.bolt_state_time, $json.firmware_version, $json.bolt_state"
         state.bolt_state_time = json.bolt_state_time
         state.firmware_version = json.firmware_version
         if (currentFirmware != state.firmware_version) {
@@ -359,5 +332,4 @@ def updateState(response) {
     } catch (Exception e) {
         log.warn "Couldn't update state from $e"
     }
-//    log.info "Using state:$state"
 }
