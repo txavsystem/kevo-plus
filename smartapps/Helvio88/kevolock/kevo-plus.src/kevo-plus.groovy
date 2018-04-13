@@ -14,9 +14,9 @@
  *
  */
 definition(
-    name: "Kevo Unofficial",
-    namespace: "kennelbound-smartthings/kevolock",
-    author: "Sam Alston",
+    name: "Kevo Plus",
+    namespace: "Helvio88/kevo-plus",
+    author: "Helvio Pedreschi",
     description: "The manager SmartApp for Kevo Plus",
     category: "Safety & Security",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
