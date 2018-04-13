@@ -1,5 +1,5 @@
 # kevo-plus
-An unofficial Kevo (Plus) device handler for SmartThings
+An unofficial Kevo Plus device handler for Samsung SmartThings
 
 ## Intro
 This is a device handler definition for Kevo Plus locks.  You'll need to clone and setup the device handler before setting up the devices.
