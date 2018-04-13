@@ -24,4 +24,4 @@ This is a device handler definition for Kevo Plus locks.  You'll need to clone a
 7. Fill in the username, password, and the device information from Kevo.
 ![Edit Preferences](readme/Show_Device_2.png)
 
-8. Hit Save.  You should now have a "Thing" available for control.
+8. Hit Save. You should now have a "Thing" available for control.
