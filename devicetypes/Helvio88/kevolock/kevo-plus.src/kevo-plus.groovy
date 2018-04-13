@@ -7,7 +7,6 @@ metadata {
         capability "Health Check"
         capability "Lock"
         capability "Refresh"
-        capability "Switch"
         
         attribute 'firmware', 'string'
     }
