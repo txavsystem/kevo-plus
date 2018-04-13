@@ -1,4 +1,4 @@
-# kevo-unofficial
+# kevo-plus
 An unofficial Kevo (Plus) device handler for SmartThings
 
 ## Intro
