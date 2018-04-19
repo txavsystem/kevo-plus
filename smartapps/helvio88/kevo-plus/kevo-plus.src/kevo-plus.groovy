@@ -19,9 +19,9 @@ definition(
     author: "Helvio Pedreschi",
     description: "The manager SmartApp for Kevo Plus",
     category: "Safety & Security",
-    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
+    iconUrl: "https://lh6.ggpht.com/7wQk6c9M1kFkZTkheR0pZpLPsUr1DxMUmPYKbEHwPUatQcmW74LHa4J1GdoW_EDjjwQ=w60",
+    iconX2Url: "https://lh6.ggpht.com/7wQk6c9M1kFkZTkheR0pZpLPsUr1DxMUmPYKbEHwPUatQcmW74LHa4J1GdoW_EDjjwQ=w120",
+    iconX3Url: "https://lh6.ggpht.com/7wQk6c9M1kFkZTkheR0pZpLPsUr1DxMUmPYKbEHwPUatQcmW74LHa4J1GdoW_EDjjwQ=w180")
 
 
 preferences {
